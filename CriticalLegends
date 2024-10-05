@@ -1,0 +1,93 @@
+-- Create ScreenGui and Frame for the GUI
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local ToggleButton = Instance.new("TextButton")
+local ReexecuteButton = Instance.new("TextButton") -- New button for re-execute
+local UICorner = Instance.new("UICorner")
+local isToggled = false
+local autoTpRunning = false
+
+-- Set up GUI properties
+ScreenGui.Name = "AutoTpGui"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Position = UDim2.new(0.1, 0, 0.1, 0)
+Frame.Size = UDim2.new(0, 150, 0, 120)
+Frame.Active = true
+Frame.Draggable = true -- Allow Frame to be dragged
+
+UICorner.Parent = Frame
+
+ToggleButton.Parent = Frame
+ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.2, 0)
+ToggleButton.Size = UDim2.new(0, 120, 0, 40)
+ToggleButton.Font = Enum.Font.SourceSans
+ToggleButton.Text = "Auto Tp: OFF"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextSize = 20
+
+-- Re-execute button setup
+ReexecuteButton.Parent = Frame
+ReexecuteButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ReexecuteButton.Position = UDim2.new(0.1, 0, 0.7, 0)
+ReexecuteButton.Size = UDim2.new(0, 120, 0, 40)
+ReexecuteButton.Font = Enum.Font.SourceSans
+ReexecuteButton.Text = "Re-execute"
+ReexecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ReexecuteButton.TextSize = 20
+
+-- Auto Tp to Damage Orb function
+local function autoTpToOrb()
+    local rootpart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    autoTpRunning = true -- Indicate that the auto TP loop is running
+    while isToggled do
+        wait(0.1)
+        
+        -- Check if CombatFolder exists
+        local combatFolder = game:GetService("Workspace"):FindFirstChild("CombatFolder")
+        if combatFolder and combatFolder:FindFirstChild(game.Players.LocalPlayer.Name) then
+            local playerCombatFolder = combatFolder[game.Players.LocalPlayer.Name]
+            for i, v in pairs(playerCombatFolder:GetChildren()) do
+                if string.match(tostring(v), "Orb") then
+                    rootpart.CFrame = CFrame.new(v.HitBox.Position)
+                end
+            end
+        end
+    end
+    autoTpRunning = false -- Stop the loop when toggled off
+end
+
+-- Toggle button function
+ToggleButton.MouseButton1Click:Connect(function()
+    isToggled = not isToggled
+    if isToggled then
+        ToggleButton.Text = "Auto Tp: ON"
+        if not autoTpRunning then -- Start auto TP only if it's not already running
+            spawn(autoTpToOrb)
+        end
+    else
+        ToggleButton.Text = "Auto Tp: OFF"
+    end
+end)
+
+-- Re-execute function to destroy and reload the GUI
+ReexecuteButton.MouseButton1Click:Connect(function()
+    -- Destroy current GUI
+    ScreenGui:Destroy()
+
+    -- Re-execute the script (replace the following with the full script)
+    -- You can use a loadstring() or require() if the script is external
+    loadstring(game:HttpGet("url_to_your_script.lua"))()  -- Load your script again from URL or local storage
+end)
+
+-- Minimalist design setup
+Frame.BorderSizePixel = 0
+ToggleButton.BorderSizePixel = 0
+ToggleButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+ReexecuteButton.BorderSizePixel = 0
+ReexecuteButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Frame.BackgroundTransparency = 0.2
