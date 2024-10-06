@@ -81,7 +81,7 @@ ReexecuteButton.MouseButton1Click:Connect(function()
 
     -- Re-execute the script (replace the following with the full script)
     -- You can use a loadstring() or require() if the script is external
-    loadstring(game:HttpGet("url_to_your_script.lua"))()  -- Load your script again from URL or local storage
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Triad-0112/RobloxRepo/refs/heads/main/CriticalLegends"))()  -- Load your script again from URL or local storage
 end)
 
 -- Minimalist design setup
